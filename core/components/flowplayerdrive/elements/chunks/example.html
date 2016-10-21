@@ -1,0 +1,91 @@
+<!-- CSS for this demo -->
+<link rel="stylesheet" href="//flowplayer.org/media/css/demos/playlist/classic.css">
+<!-- quality selector stylesheet for HLS level selection -->
+<link rel="stylesheet" href="//releases.flowplayer.org/quality-selector/flowplayer.quality-selector.css">
+
+
+<!-- Flowplayer depends on jquery for video tag based setups -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
+<!-- Flowplayer-->
+<script src="//releases.flowplayer.org/6.0.5/flowplayer.min.js"></script>
+
+<!-- Flowplayer hlsjs engine for smoother HLS playback in modern browsers (optional) -->
+<script src="//releases.flowplayer.org/hlsjs/flowplayer.hlsjs.min.js"></script>
+
+<script>
+    // wait until DOM is ready
+    $(function () {
+        // manual installation into container element with id="classic"
+        $("#classic").flowplayer({
+            splash: true,
+            advance: true,
+            ratio: 0.5625,
+            autoplay: true,
+            embed: false,
+
+            // HLS level selection provided by hlsjs plugin
+            hlsQualities: [1, 3, 6, 7],
+            qualities: ["216p", "360p", "720p", "1080p"],
+            defaultQuality: "360p",
+            rtmp: "rtmp://s3b78u0kbtx79q.cloudfront.net/cfx/st",
+        });
+
+    });
+</script>
+<style>
+    #classic .fp-playlist {
+        margin-top: 40px;
+        top: 100%;
+        left: 4%;
+        bottom: auto;
+        box-shadow: none;
+    }
+    #classic .fp-playlist a,
+    #classic.is-paused .fp-playlist a,
+    #classic.is-loading .fp-playlist a {
+        background: none;
+        border: 4px solid #333;
+        float: left;
+        height: 155px;
+        margin: 10px 5px 0;
+        transition: all 0.5s ease 0s;
+        width: 207px;
+    }
+    #classic.is-ready .fp-playlist a {
+        height: 90px;
+        width: 102px;
+        font-size: 85%;
+    }
+    #classic.is-ready .fp-playlist a.is-active,
+    #classic.is-loading .fp-playlist a.is-active {
+        border-color: #00ffff;
+    }
+    /* Hide controls: */
+    .flowplayer .fp-controls {
+        /*display: none*/
+    }
+</style>
+
+[[!getDriveVideos?
+    &search=``
+]]
+<div id="classic" class="is-closeable is-splash" style="background-color:#777; background-image:url('[[+flowPlayer.splash]]');">
+
+    [[+flowPlayer.video]]
+    <!--
+    Placeholder creates:
+    <video data-title="V1 Tag">
+        <source type="application/x-mpegurl"
+                src="//cdn.flowplayer.org/file.m3u8">
+        <source type="video/webm" src="//cdn.flowplayer.org/file.webm">
+        <source type="video/mp4"
+                src="//cdn.flowplayer.org/file.mp4">
+    </video>
+    -->
+
+    <div class="fp-playlist">
+        [[+flowPlayer.clips]]
+    </div>
+
+</div>
