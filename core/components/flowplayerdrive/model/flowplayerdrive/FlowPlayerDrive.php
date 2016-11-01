@@ -104,12 +104,23 @@ class FlowPlayerDrive
 
     /**
      * See: https://flowplayer.org/docs/drive-api.html#list
-     * @param $search
+     * @param string $search ~ title search
+     * @param string $tag_search
      * @param int $cache_limit ~ in seconds
      *
      * @return array|bool
+     *
+     * There is actually a bug in our documentation -- to search with tags the tag values need to be specified using
+     * a 'tags' parameter (not 'search' which can be used for searching with video titles). To list all videos
+     * with tag name 'newhire' in them:
+     *    http://drive.api.flowplayer.org/videos/?tags=newhire
+     *
+     * You can try these queries in the browser if you specify the 'authcode' as a query param.
+     * It can be specified in the request header 'flowplayer-authcode' or as a query param:
+     *    http://drive.api.flowplayer.org/videos/?authcode=<your-authcode-here>&tags=newhire
+     *
      */
-    public function getVideos($search, $cache_limit=3600*24)
+    public function getVideos($search, $tag_search=null, $cache_limit=3600*24)
     {
         // To get videos with tags 'promo' or 'first' or having 'promo'
         // or 'first' as part of the title. Return first 30 videos.
@@ -119,18 +130,24 @@ class FlowPlayerDrive
             return false;
         }
 
-        $cache_key = $this->package_name.'-videos-'.$this->authcode.'-'.$search;
+        $cache_key = $this->package_name.'-videos-'.$this->authcode.'-'.$search.'-'.$tag_search;
 
         // Gets the data from cache again. Returns null if cache is not available or expired.
         $videos = $this->modx->cacheManager->get($cache_key);
 
         if ( empty($videos) || !$this->use_cache ) {
+
+            $search_params = array();
+            if ( isset($search) && !empty($search) ) {
+                $search_params['search'] = $search;
+            }
+            if ( isset($tag_search) && !empty($tag_search) ) {
+                $search_params['tags'] = $tag_search;
+            }
             $results = $this->sendRequest(
                 'videos',
                 'GET',
-                array(
-                    'search' => $search// Does this need to be URL encoded?
-                )
+                $search_params
             );
             $videos = array();
             if ( isset($results['videos']) ) {

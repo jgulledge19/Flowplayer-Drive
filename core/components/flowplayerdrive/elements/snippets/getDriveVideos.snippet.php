@@ -8,8 +8,11 @@
  *   &cacheTime=`21000`
  * ]]
  */
-/** @var string $search */
+/** @var string $search ~ search titles */
 $search = $modx->getOption('search', $scriptProperties, null);
+/** @var string $tags */
+$tags = $modx->getOption('tags', $scriptProperties, null);
+
 /** @var int $cache_time ~ in seconds */
 $cache_time = $modx->getOption('cacheTime', $scriptProperties, 3600);
 /** @var boolean $debug */
@@ -43,7 +46,7 @@ if ( $debug ) {
     $flowPlayerDrive->setUseCache(false);
 }
 
-$videos = $flowPlayerDrive->getVideos($search, $cache_time);
+$videos = $flowPlayerDrive->getVideos($search, $tags, $cache_time);
 
 if ( !is_null($clip_order) ) {
     $videos = $flowPlayerDrive->reorderVideos($videos, $clip_order);
