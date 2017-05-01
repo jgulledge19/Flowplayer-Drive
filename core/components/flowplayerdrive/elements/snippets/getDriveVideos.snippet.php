@@ -27,9 +27,26 @@ $clip_chunk = $modx->getOption('clipChunk', $scriptProperties, 'flowPlayerClip')
 
 /**
  * @var string $clip_order ~ comma separated list of video IDs in the desired order, if not in list will be placed
- *      in default order after preferred onces
+ *      in default order after preferred ones
  */
 $clip_order = $modx->getOption('clipOrder', $scriptProperties, null);
+
+/**
+ * @var string $clip_order ~ list of video IDs in the desired order in a JSON string, if not in list will be placed
+ *      in default order after preferred ones
+ */
+$clip_order_json = json_decode($modx->getOption('clipOrderJSON', $scriptProperties, null), true);
+if(is_array($clip_order_json)) {
+    $clip_order = '';
+    foreach ($clip_order_json as $c => $clip) {
+        $key = array_keys(json_decode($clip['title'], true));
+
+        if (!empty($clip_order)) {
+            $clip_order .= ',';
+        }
+        $clip_order .= $key[0];
+    }
+}
 
 if ( $debug ) {
     error_reporting(E_ALL | E_STRICT);
@@ -48,9 +65,10 @@ if ( $debug ) {
 
 $videos = $flowPlayerDrive->getVideos($search, $tags, $cache_time);
 
-if ( !is_null($clip_order) ) {
+if ( !is_null($clip_order) && !empty($clip_order) ) {
     $videos = $flowPlayerDrive->reorderVideos($videos, $clip_order);
 }
+
 // build placeholders for video:
 //[[+source.webm.format]]" src="[[+source.webm.src]]
 $video_placeholders = array();

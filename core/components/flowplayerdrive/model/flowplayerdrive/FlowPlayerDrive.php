@@ -252,6 +252,7 @@ class FlowPlayerDrive
      */
     public function reorderVideos($videos, $clip_order='')
     {
+        //$this->modx->log(modX::LOG_LEVEL_ERROR, 'reorderVideos '.$clip_order);
         $order = explode(',', $clip_order);
         /** @var array $org ~ array($clip_id => $c,... ) */
         $org = array();
@@ -274,6 +275,7 @@ class FlowPlayerDrive
             }
             $reorder[] = $video;
         }
+        //$this->modx->log(modX::LOG_LEVEL_ERROR, 'reorderVideos '.print_r($reorder, true));
         return $reorder;
     }
 
